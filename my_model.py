@@ -76,8 +76,8 @@ def prepare_submission_parallel(xtrain, ytrain, xtest, ytest, prefix=''):
 
 def my_model(xtrain, ytrain, xtest, ytest, index=0):
     
-    model = RandomForestRegressor(n_jobs=-1, n_estimators=200)
-    train_model_parallel(model, xtrain, ytrain, index, prefix='rf200')
+    model = RandomForestRegressor(n_jobs=-1, n_estimators=100)
+    train_model_parallel(model, xtrain, ytrain, index, prefix='rf100')
     
 #    model = GradientBoostingRegressor(loss='ls', verbose=1, max_depth=7, 
 #                                      n_estimators=200)
