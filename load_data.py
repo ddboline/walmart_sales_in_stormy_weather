@@ -28,18 +28,18 @@ def clean_data(indf):
 def load_data(do_drop_list=False, do_plots=False):
     train_df = pd.read_csv('train_full.csv.gz', compression='gzip')
     test_df = pd.read_csv('test_full.csv.gz', compression='gzip')
-    submit_df = pd.read_csv('sampleSubmission.csv.gz', compression='gzip')
+    submit_df = pd.read_csv('sample_submit_full.csv.gz', compression='gzip')
 
     train_df = clean_data(train_df)
     test_df = clean_data(test_df)
 
-    print train_df.columns
-    print test_df.columns
+#    print train_df.columns
+#    print test_df.columns
     print submit_df.columns
 
-    for col in train_df.columns:
-        if any(train_df[col].isnull()):
-            print col, train_df[col].dtype
+#    for col in train_df.columns:
+#        if any(train_df[col].isnull()):
+#            print col, train_df[col].dtype
 
     if do_plots:
         from plot_data import plot_data
@@ -50,7 +50,7 @@ def load_data(do_drop_list=False, do_plots=False):
 
     ### wanted to keep track of feature_list
     feature_list = train_df.drop(['store_nbr', 'station_nbr']+unitlist, axis=1).columns
-    print 'features', list(feature_list)
+#    print 'features', list(feature_list)
 
     xtrain = train_df.drop(labels=['store_nbr', 'station_nbr']+unitlist, axis=1).values
     ytrain = train_df[unitlist].values
