@@ -80,9 +80,9 @@ def my_model(xtrain, ytrain, xtest, ytest, index=0):
     #model = RandomForestRegressor(n_jobs=-1, n_estimators=100)
     #train_model_parallel(model, xtrain, ytrain, index, prefix='rf100')
     
-    model = GradientBoostingRegressor(loss='ls', verbose=1, max_depth=5, 
+    model = GradientBoostingRegressor(loss='ls', verbose=1, max_depth=7, 
                                         n_estimators=100)
-    train_model_parallel(model, xtrain, ytrain, index, prefix='gbr100_5')
+    train_model_parallel(model, xtrain, ytrain, index, prefix='gbr100_7')
 
     
     return
