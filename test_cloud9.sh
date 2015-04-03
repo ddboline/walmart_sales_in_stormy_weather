@@ -1,5 +1,7 @@
 #!/bin/bash
 
+NODE=$1
+
 scp ddboline@ddbolineathome.mooo.com:/home/ddboline/setup_files/build/kaggle_walmart_sales_in_stormy_weather/walmart_sales_in_stormy_weather.tar.gz .
 tar zxvf walmart_sales_in_stormy_weather.tar.gz
 rm walmart_sales_in_stormy_weather.tar.gz
