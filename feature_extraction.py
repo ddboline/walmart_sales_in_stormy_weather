@@ -98,5 +98,43 @@ def feature_extraction():
         outfile.close()
     return
 
+def convert_sample_submission():
+    outfile = gzip.open('sample_submit_full.csv.gz', 'wb')
+    with gzip.open('sampleSubmission.csv.gz', 'rb') as csvfile:
+        csv_reader = csv.reader(csvfile)
+        labels = next(csv_reader)
+        output_labels = ['date', 'store_nbr']
+        for idx in range(111):
+            output_labels.append('units%d' % (idx+1))
+        
+        csv_writer = csv.writer(outfile)
+        csv_writer.writerow(output_labels)
+        
+        current_row = {k: None for k in output_labels}        
+        
+        for n, row in enumerate(csv_reader):
+            if n % 100000 == 0:
+                print n, 'complete'
+
+            rowdict = OrderedDict(zip(labels, row))
+            
+            store_nbr, item_nbr, date = rowdict['id'].split('_')
+            
+            if current_row['date'] != date or\
+               current_row['store_nbr'] != store_nbr:
+                
+                if current_row['date'] != None:
+                    outrow = []
+                    for label in output_labels:
+                        outrow.append(current_row[label])
+                    csv_writer.writerow(outrow)
+                
+                current_row['date'] = date
+                current_row['store_nbr'] = store_nbr
+            k = 'units%s' % item_nbr
+            current_row[k] = rowdict['units']
+
+
 if __name__ == '__main__':
-    feature_extraction()
+#    feature_extraction()
+    convert_sample_submission()
