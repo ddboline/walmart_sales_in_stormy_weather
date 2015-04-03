@@ -22,7 +22,7 @@ from load_data import load_data
 
 
 def transform_to_log(y):
-    if any(y < 0):
+    if (y < 0).any():
         y[y < 0] = 0
     return np.log(y+1)
 
@@ -60,6 +60,7 @@ def test_model_parallel(xtrain, ytrain, prefix=''):
                 ypred[ypred < 0] = 0
             RMSLE_VAL.append(np.sqrt(mean_squared_error(ypred, 
                                                         yTest[:,index])))
+            print RMSLE_VAL[-1]
     print np.mean(RMSLE_VAL)
 
 def prepare_submission_parallel(xtrain, ytrain, xtest, ytest, prefix=''):
@@ -103,4 +104,4 @@ if __name__ == '__main__':
     elif jobidx == 10:
         test_model_parallel(xtrain, ytrain, prefix='rf100')
     elif jobidx == 11:
-        pass
+        prepare_submission_parallel(xtrain, ytrain, xtest, ytest, prefix='rf100')

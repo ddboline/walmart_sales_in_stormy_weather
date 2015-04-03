@@ -71,6 +71,17 @@ def feature_extraction():
             csv_writer.writerow(labels_to_keep+weather_labels)
             
             current_row = {k: None for k in labels_to_keep}            
+
+            def write_out_row():
+                station_nbr = store_key_dict[current_row['store_nbr']]
+                key = '%s_%s' % (station_nbr, current_row['date'])
+                outrow = []
+                for label in labels_to_keep:
+                    outrow.append(current_row[label])
+                for label in weather_labels:
+                    outrow.append(weather_features[key][label])
+                csv_writer.writerow(outrow)
+                
             
             for n, row in enumerate(csv_reader):
                 if n % 100000 == 0:
@@ -81,19 +92,14 @@ def feature_extraction():
                    current_row['store_nbr'] != rowdict['store_nbr']:
 
                     if current_row['date'] != None:
-                        station_nbr = store_key_dict[current_row['store_nbr']]
-                        key = '%s_%s' % (station_nbr, current_row['date'])
-                        outrow = []
-                        for label in labels_to_keep:
-                            outrow.append(current_row[label])
-                        for label in weather_labels:
-                            outrow.append(weather_features[key][label])
-                        csv_writer.writerow(outrow)
+                        write_out_row()
+
                     for label in 'date', 'store_nbr':
                         current_row[label] = rowdict[label]
                 if 'units' in rowdict:
                     k = 'units%s' % rowdict['item_nbr']
                     current_row[k] = rowdict['units']
+            write_out_row()
 
         outfile.close()
     return
@@ -112,6 +118,12 @@ def convert_sample_submission():
         
         current_row = {k: None for k in output_labels}        
         
+        def write_out_row():
+            outrow = []
+            for label in output_labels:
+                outrow.append(current_row[label])
+            csv_writer.writerow(outrow)
+
         for n, row in enumerate(csv_reader):
             if n % 100000 == 0:
                 print n, 'complete'
@@ -124,15 +136,13 @@ def convert_sample_submission():
                current_row['store_nbr'] != store_nbr:
                 
                 if current_row['date'] != None:
-                    outrow = []
-                    for label in output_labels:
-                        outrow.append(current_row[label])
-                    csv_writer.writerow(outrow)
+                    write_out_row()
                 
                 current_row['date'] = date
                 current_row['store_nbr'] = store_nbr
             k = 'units%s' % item_nbr
             current_row[k] = rowdict['units']
+        write_out_row()
 
 def prepare_final_submission(csvfname):
     outfile = gzip.open('submit.csv.gz', 'wb')
@@ -154,6 +164,6 @@ def prepare_final_submission(csvfname):
                 csv_writer.writerow(outrow)
 
 if __name__ == '__main__':
-#    feature_extraction()
-#    convert_sample_submission()
-    prepare_final_submission('sample_submit_full.csv.gz')
+    #feature_extraction()
+    #convert_sample_submission()
+    prepare_final_submission('submit_full_rf100.csv.gz')

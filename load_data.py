@@ -35,7 +35,7 @@ def load_data(do_drop_list=False, do_plots=False):
 
 #    print train_df.columns
 #    print test_df.columns
-    print submit_df.columns
+    #print submit_df.columns
 
 #    for col in train_df.columns:
 #        if any(train_df[col].isnull()):
