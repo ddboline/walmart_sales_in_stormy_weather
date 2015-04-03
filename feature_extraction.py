@@ -134,7 +134,26 @@ def convert_sample_submission():
             k = 'units%s' % item_nbr
             current_row[k] = rowdict['units']
 
+def prepare_final_submission(csvfname):
+    outfile = gzip.open('submit.csv.gz', 'wb')
+    with gzip.open(csvfname, 'rb') as csvfile:
+        csv_reader = csv.reader(csvfile)
+        labels = next(csv_reader)
+        output_labels = ['id', 'units']
+        csv_writer = csv.writer(outfile)
+        csv_writer.writerow(output_labels)
+        
+        for n, row in enumerate(csv_reader):
+            if n % 10000 == 0:
+                print n, 'complete'
+            rowdict = OrderedDict(zip(labels, row))
+            for index in range(111):
+                key = '%s_%s_%s' % (rowdict['store_nbr'], index+1, 
+                                    rowdict['date'])
+                outrow = [key, rowdict['units%d' % (index+1)]]
+                csv_writer.writerow(outrow)
 
 if __name__ == '__main__':
 #    feature_extraction()
-    convert_sample_submission()
+#    convert_sample_submission()
+    prepare_final_submission('sample_submit_full.csv.gz')
