@@ -20,6 +20,7 @@ from sklearn.metrics import mean_squared_error
 
 from load_data import load_data
 
+SAMPLENAME = 'gbr100_7'
 
 def transform_to_log(y):
     if (y < 0).any():
@@ -78,11 +79,11 @@ def prepare_submission_parallel(xtrain, ytrain, xtest, ytest, prefix=''):
 def my_model(xtrain, ytrain, xtest, ytest, index=0):
     
     #model = RandomForestRegressor(n_jobs=-1, n_estimators=100)
-    #train_model_parallel(model, xtrain, ytrain, index, prefix='rf100')
+    #train_model_parallel(model, xtrain, ytrain, index, prefix=SAMPLENAME)
     
     model = GradientBoostingRegressor(loss='ls', verbose=1, max_depth=7, 
                                         n_estimators=100)
-    train_model_parallel(model, xtrain, ytrain, index, prefix='gbr100_7')
+    train_model_parallel(model, xtrain, ytrain, index, prefix=SAMPLENAME)
 
     
     return
@@ -102,6 +103,9 @@ if __name__ == '__main__':
         for idx in range(jobidx*12,min(jobidx*12+12,111)):
             my_model(xtrain, ytrain, xtest, ytest, index=idx)
     elif jobidx == 10:
-        test_model_parallel(xtrain, ytrain, prefix='rf100')
+        test_model_parallel(xtrain, ytrain, prefix=SAMPLENAME)
     elif jobidx == 11:
-        prepare_submission_parallel(xtrain, ytrain, xtest, ytest, prefix='rf100')
+        prepare_submission_parallel(xtrain, ytrain, xtest, ytest, prefix=SAMPLENAME)
+    elif jobidx == 12:
+        from feature_extraction import prepare_final_submission
+        prepare_final_submission('submit_full_%s.csv.gz' % SAMPLENAME)

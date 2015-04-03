@@ -2,9 +2,9 @@
 
 NODE=$1
 
-# scp ddboline@ddbolineathome.mooo.com:/home/ddboline/setup_files/build/kaggle_walmart_sales_in_stormy_weather/walmart_sales_in_stormy_weather.tar.gz .
-# tar zxvf walmart_sales_in_stormy_weather.tar.gz
-# rm walmart_sales_in_stormy_weather.tar.gz
+scp ddboline@ddbolineathome.mooo.com:/home/ddboline/setup_files/build/kaggle_walmart_sales_in_stormy_weather/walmart_sales_in_stormy_weather.tar.gz .
+tar zxvf walmart_sales_in_stormy_weather.tar.gz
+rm walmart_sales_in_stormy_weather.tar.gz
 
 ./my_model.py $1 > output_${1}.out 2> output_${1}.err
 
