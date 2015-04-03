@@ -57,11 +57,11 @@ def test_model_parallel(xtrain, ytrain, prefix=''):
             model = pickle.load(pklfile)
             ypred = model.predict(xTest)
             if any(ypred < 0):
-                print ypred[ypred < 0]
+                #print ypred[ypred < 0]
                 ypred[ypred < 0] = 0
             RMSLE_VAL.append(np.sqrt(mean_squared_error(ypred, 
                                                         yTest[:,index])))
-            print RMSLE_VAL[-1]
+            print np.mean(RMSLE_VAL[-1])
     print np.mean(RMSLE_VAL)
 
 def prepare_submission_parallel(xtrain, ytrain, xtest, ytest, prefix=''):
@@ -70,7 +70,7 @@ def prepare_submission_parallel(xtrain, ytrain, xtest, ytest, prefix=''):
             model = pickle.load(pklfile)
             ylpred = model.predict(xtest)
             if any(ylpred < 0):
-                print ylpred[ylpred < 0]
+                #print ylpred[ylpred < 0]
                 ylpred[ylpred < 0] = 0
             ytest['units%d' % (index+1)] = transform_from_log(ylpred)\
                                             .astype(np.int64)
