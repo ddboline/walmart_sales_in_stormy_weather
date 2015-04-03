@@ -42,7 +42,7 @@ def train_model_parallel(model, xtrain, ytrain, index=0, prefix=''):
         ypred[ypred < 0] = 0
 
     print 'RMSE', np.sqrt(mean_squared_error(ypred, yTest))
-    with gzip.open('model%s%d.pkl.gz' % (prefix, index), 'wb') as pklfile:
+    with gzip.open('model_%s_%d.pkl.gz' % (prefix, index), 'wb') as pklfile:
         pickle.dump(model, pklfile, protocol=2)
     return
 
@@ -52,7 +52,7 @@ def test_model_parallel(xtrain, ytrain, prefix=''):
                                                     test_size=0.12)
     RMSLE_VAL = []
     for index in range(111):
-        with gzip.open('model%s%d.pkl.gz' % (prefix, index), 'rb') as pklfile:
+        with gzip.open('model_%s_%d.pkl.gz' % (prefix, index), 'rb') as pklfile:
             model = pickle.load(pklfile)
             ypred = model.predict(xTest)
             if any(ypred < 0):
@@ -64,7 +64,7 @@ def test_model_parallel(xtrain, ytrain, prefix=''):
 
 def prepare_submission_parallel(xtrain, ytrain, xtest, ytest, prefix=''):
     for index in range(111):
-        with gzip.open('model%s%d.pkl.gz' % (prefix, index), 'rb') as pklfile:
+        with gzip.open('model_%s_%d.pkl.gz' % (prefix, index), 'rb') as pklfile:
             model = pickle.load(pklfile)
             ylpred = model.predict(xtest)
             if any(ylpred < 0):
@@ -75,8 +75,9 @@ def prepare_submission_parallel(xtrain, ytrain, xtest, ytest, prefix=''):
     ytest.to_csv('submit_full_%s.csv' % prefix, index=False)
 
 def my_model(xtrain, ytrain, xtest, ytest, index=0):
-    model = RandomForestRegressor(n_jobs=-1, n_estimators=100)
-    train_model_parallel(model, xtrain, ytrain, index, prefix='rf100')
+    
+    model = RandomForestRegressor(n_jobs=-1, n_estimators=200)
+    train_model_parallel(model, xtrain, ytrain, index, prefix='rf200')
     
 #    model = GradientBoostingRegressor(loss='ls', verbose=1, max_depth=7, 
 #                                      n_estimators=200)
@@ -97,7 +98,7 @@ if __name__ == '__main__':
     if jobidx == -1:
         my_model(xtrain, ytrain, xtest, ytest, index=0)
     elif jobidx >=0 and jobidx < 10:
-        for idx in range(x*12,min(x*12+12,111)):
+        for idx in range(jobidx*12,min(jobidx*12+12,111)):
             my_model(xtrain, ytrain, xtest, ytest, index=idx)
     elif jobidx == 10:
         test_model_parallel(xtrain, ytrain, prefix='rf100')
